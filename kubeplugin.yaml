@@ -15,7 +15,7 @@ spec:
         - darwin
         - linux
     uri: https://github.com/PTarasyuk/kubeplugin/archive/v0.0.1.zip
-    sha256: 7ddcbd0a860db542ae44c442721d9c9e91e896011d3743ebffd385f828ac4b02
+    sha256: 164720980e2f90867bc2d6d9c7e8a3130b9b6c0887e78ce83808ef19c425eb0a
     files:
     - from: "/kubeplugin-0.0.1/scripts/kubeplugin"
       to: .
