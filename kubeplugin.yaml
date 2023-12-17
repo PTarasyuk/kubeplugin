@@ -1,0 +1,22 @@
+apiVersion: krew.googlecontainertools.github.com/v1alpha2
+kind: Plugin
+metadata:
+  name: kubeplugin
+spec:
+  version: "v0.0.1"
+  homepage: https://github.com/PTarasyuk/kubeplugin
+  shortDescription: "Displays CPU/Memory usage for a resource type (Pod/Node) in a namespace"
+  platforms:
+  - selector:
+      matchExpressions:
+      - key: "os"
+        operator: "In"
+        values:
+        - darwin
+        - linux
+    uri: https://github.com/PTarasyuk/kubeplugin/archive/v0.0.1.zip
+    sha256: 7ddcbd0a860db542ae44c442721d9c9e91e896011d3743ebffd385f828ac4b02
+    files:
+    - from: "/kubeplugin-0.0.1/scripts/kubeplugin"
+      to: .
+    bin: kubeplugin

@@ -1,0 +1,63 @@
+#!/bin/bash
+
+function display_help() {
+    echo "kubectl plugin displays CPU/Memory usage for a resource type (Pod/Node) in a namespace"
+    echo ""
+    echo "Usage:"
+    echo "  kubectl kubeplugin [resource_type] [namespace]"
+    echo ""
+    echo "Options:"
+    echo "  -h, --help      - Display help message"
+    echo "  -v, --version   - Display version"
+    echo "  [resource_type] - Specify one of the following resource types:"
+    echo "      - pods  - display CPU/memory usage of pods. Aliases: pod, po"
+    echo "      - nodes - display CPU/memory usage of nodes. Aliases: node, no"
+    echo "  [namespace]     - Specify the namespace; optional parameter, by default kube-system"
+    echo ""
+    exit 0
+}
+
+if [[ "$(basename "$0")" != kubectl-* ]]; then
+    echo "This script should be used as a kubectl plugin. More details on <https://github.com/PTarasyuk/kubeplugin>."
+    exit 1
+fi
+
+if [[ $# == 0 || "$1" == "-h" || "$1" == "--help" ]]; then
+    display_help
+    exit 0
+fi
+
+if [[ "$1" == "-v" || "$1" == "--version" ]]; then
+    echo "v0.0.1"
+    exit 0
+fi
+
+# Define command-line arguments
+case $1 in
+    "po"|"pod"|"pods"|"no"|"node"|"nodes")
+        RESOURCE_TYPE=$1
+        ;;
+    *)
+        echo -e 'Error: Invalid argument "'$1'". Please provide a valid argument.\n'
+        display_help
+        exit 2
+esac
+
+DEFAULT_NS="kube-system"
+NAME_SPACE=${2:-$DEFAULT_NS}
+
+# Retrieve resource usage statistics from Kubernetes
+(
+    kubectl top $RESOURCE_TYPE --namespace=$NAME_SPACE | tail -n +2 | while read line
+    do
+      # Extract CPU and memory usage from the output
+      NAME=$(echo $line | awk '{print $1}')
+      CPU=$(echo $line | awk '{print $2}')
+      MEMORY=$(echo $line | awk '{print $3}')
+
+
+      echo "$RESOURCE_TYPE;$NAME_SPACE;$NAME;$CPU;$MEMORY"
+      # Output the statistics to the console
+      # "Resource, Namespace, Name, CPU, Memory"
+    done
+) | column -t -s ';' -N "Resource,Namespace,Name,CPU,Memory"
