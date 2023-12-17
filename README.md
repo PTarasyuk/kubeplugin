@@ -7,7 +7,8 @@
 Ensure you have [krew](https://krew.sigs.k8s.io/docs/user-guide/setup/install/) installed.
 
 ```bash
-kubectl krew install --manifest=https://raw.githubusercontent.com/PTarasyuk/kubeplugin/v0.0.1/kubeplugin.yaml
+wget https://raw.githubusercontent.com/PTarasyuk/kubeplugin/main/kubeplugin.yaml
+kubectl krew install --manifest=kubeplugin.yaml
 ```
 
 ## Usage
